@@ -1,8 +1,8 @@
 <?php
-namespace App\Tests;
+namespace dcli\App\Tests;
 
 use PHPUnit\Framework\TestCase;
-use App\Utility\Cleaner;
+use dcli\App\Utility\Cleaner;
 
 class CleanerTest extends TestCase
 {

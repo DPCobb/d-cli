@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Core;
+namespace dcli\App\Core;
 
-use App\Interfaces\Command_Container_Interface;
-use App\Utility\Cleaner;
-use App\Utility\Arr;
+use dcli\App\Interfaces\Command_Container_Interface;
+use dcli\App\Utility\Cleaner;
+use dcli\App\Utility\Arr;
 use stdClass;
 
 class Command_Container implements Command_Container_Interface

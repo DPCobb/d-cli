@@ -22,9 +22,9 @@ if (php_sapi_name() !== 'cli') {
 
 require_once __DIR__ . "/vendor/autoload.php";
 
-use App\Core\Application;
-use App\Core\Config;
-use App\Core\Command_Container;
+use dcli\App\Core\Application;
+use dcli\App\Core\Config;
+use dcli\App\Core\Command_Container;
 
 // Get any user set config values
 $config = Config::load(__DIR__ . "/App/config.ini")->get();
@@ -87,9 +87,9 @@ if (php_sapi_name() !== 'cli') {
 
 require_once __DIR__ . "/vendor/autoload.php";
 
-use App\Core\Application;
-use App\Core\Config;
-use App\Core\Command_Container;
+use dcli\App\Core\Application;
+use dcli\App\Core\Config;
+use dcli\App\Core\Command_Container;
 
 // Get any user set config values
 $config = Config::load(__DIR__ . "/App/config.ini")->get();
@@ -98,7 +98,7 @@ $command_container = new Command_Container($config, $argv);
 $app = Application::load($command_container);
 
 
-$app->set('hello-world', 'App\Commands\Hello\Test@test');
+$app->set('hello-world', 'dcli\App\Commands\Hello\Test@test');
 
 
 $app->run()
@@ -124,9 +124,9 @@ if (php_sapi_name() !== 'cli') {
 
 require_once __DIR__ . "/vendor/autoload.php";
 
-use App\Core\Application;
-use App\Core\Config;
-use App\Core\Command_Container;
+use dcli\App\Core\Application;
+use dcli\App\Core\Config;
+use dcli\App\Core\Command_Container;
 
 // Get any user set config values
 $config = Config::load(__DIR__ . "/App/config.ini")->get();

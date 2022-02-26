@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Interfaces;
+namespace dcli\App\Interfaces;
 
 interface Printer_Interface
 {

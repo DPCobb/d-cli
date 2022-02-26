@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Core;
+namespace dcli\App\Core;
 
-use App\Interfaces\Command_Container_Interface;
+use dcli\App\Interfaces\Command_Container_Interface;
 use Error;
 
 class Application
@@ -64,7 +64,7 @@ class Application
                 return;
             }
 
-            // passed a class @ method ex: App\Commands\Hello\Test@helloWorld
+            // passed a class @ method ex: dcli\App\Commands\Hello\Test@helloWorld
             if (strpos($action, '@') !== false) {
                 $parts = explode('@', $action);
                 $c = new $parts[0];
@@ -89,7 +89,7 @@ class Application
             $command_class = ucwords($this->Command_Container->get('sub_command'));
         }
 
-        $namespace = sprintf("\App\Commands\%s\%s", $command, $command_class);
+        $namespace = sprintf("App\Commands\%s\%s", $command, $command_class);
 
         $className = $namespace;
 

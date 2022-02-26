@@ -1,9 +1,9 @@
 <?php
 
-namespace App\IO;
+namespace dcli\App\IO;
 
-use App\Interfaces\Printer_Interface;
-use App\IO\Themes\Default_Printer;
+use dcli\App\Interfaces\Printer_Interface;
+use dcli\App\IO\Themes\Default_Printer;
 
 class Output
 {

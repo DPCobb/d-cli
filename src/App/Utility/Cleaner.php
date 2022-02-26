@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Utility;
+namespace dcli\App\Utility;
 
 class Cleaner
 {

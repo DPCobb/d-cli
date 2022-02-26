@@ -1,8 +1,8 @@
 <?php
 
-namespace App\IO\Themes;
+namespace dcli\App\IO\Themes;
 
-use App\Interfaces\Printer_Interface;
+use dcli\App\Interfaces\Printer_Interface;
 
 class Default_Printer implements Printer_Interface
 {

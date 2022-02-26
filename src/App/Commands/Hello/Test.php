@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Commands\Hello;
+namespace dcli\App\Commands\Hello;
 
-use App\Core\Application;
+use dcli\App\Core\Application;
 
 class Test
 {
