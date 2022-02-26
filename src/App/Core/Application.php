@@ -93,7 +93,10 @@ class Application
 
         $className = $namespace;
 
-        if (class_exists($className)) {
+        $file = $this->command_path . "/" . $command . "/" . $command_class . ".php";
+
+        if (file_exists($file)) {
+            require_once $file;
             $c = new $className();
             $c->handle();
             return;
