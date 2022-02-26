@@ -6,6 +6,8 @@ A Basic PHP CLI App Framework. This project is dependancy free and meant to be a
 
 ## Basic Setup
 
+Install with: ```composer require danc0/dcli``` or download the latest package.
+
 After creating your main file (ex: ``src/dcli``) ensure you make that file executable and optionally add it to your path so you can call your application from anywhere. You will also want to create a Composer autoload file.
 
 The most basic setup uses anonymous functions to process commands.
