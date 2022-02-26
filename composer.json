@@ -7,6 +7,9 @@
             "email": "dcobb.dev@gmail.com"
         }
     ],
+    "config": {
+        "vendor-dir": "src/vendor"
+    },
     "autoload": {
         "psr-4": {
             "App\\": "App/"
