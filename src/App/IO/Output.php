@@ -29,7 +29,7 @@ class Output
         return $this->output($args[0], $color);
     }
 
-    public function __callStatic($method, $args)
+    public static function __callStatic($method, $args)
     {
         $out = new Output;
 

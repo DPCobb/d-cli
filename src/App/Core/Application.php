@@ -83,10 +83,28 @@ class Application
     {
         $command = ucwords($this->Command_Container->get('command'));
 
+        if (strpos($command, '-')) {
+            $parts = explode('-', $command);
+            foreach ($parts as &$v) {
+                $v = ucwords($v);
+            }
+
+            $command = implode('_', $parts);
+        }
+
         $command_class = "Default_Handler";
         
         if ($this->Command_Container->has('sub_command')) {
             $command_class = ucwords($this->Command_Container->get('sub_command'));
+
+            if (strpos($command_class, '-')) {
+                $parts = explode('-', $command_class);
+                foreach ($parts as &$v) {
+                    $v = ucwords($v);
+                }
+    
+                $command_class = implode('_', $parts);
+            }
         }
 
         $namespace = sprintf("App\Commands\%s\%s", $command, $command_class);
