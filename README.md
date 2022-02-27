@@ -1,6 +1,6 @@
 # D-CLI
 
-A Basic PHP CLI App Framework. This project is dependancy free and meant to be a lightweight starting point for PHP CLI applications.
+A Basic PHP CLI App Framework. This project is dependency free and meant to be a lightweight starting point for PHP CLI applications.
 
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/dpcobb/d-cli?style=plastic) ![GitHub](https://img.shields.io/github/license/dpcobb/d-cli?style=plastic)
 
