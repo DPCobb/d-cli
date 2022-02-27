@@ -1,5 +1,6 @@
 {
     "name": "danc0/dcli",
+    "type": "project",
     "description": "A lightweight PHP CLI application framework.",
     "authors": [
         {
