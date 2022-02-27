@@ -1,8 +1,8 @@
 <?php
-namespace dcli\App\Tests;
+namespace App\Tests;
 
 use PHPUnit\Framework\TestCase;
-use dcli\App\Core\Config;
+use App\Core\Config;
 
 class ConfigTest extends TestCase
 {

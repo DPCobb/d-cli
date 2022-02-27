@@ -1,8 +1,8 @@
 <?php
 
-namespace dcli\App\Core;
+namespace App\Core;
 
-use dcli\App\Interfaces\Command_Container_Interface;
+use App\Interfaces\Command_Container_Interface;
 use Error;
 
 class Application
@@ -64,7 +64,7 @@ class Application
                 return;
             }
 
-            // passed a class @ method ex: dcli\App\Commands\Hello\Test@helloWorld
+            // passed a class @ method ex: App\Commands\Hello\Test@helloWorld
             if (strpos($action, '@') !== false) {
                 $parts = explode('@', $action);
                 $c = new $parts[0];
@@ -111,10 +111,7 @@ class Application
 
         $className = $namespace;
 
-        $file = $this->command_path . "/" . $command . "/" . $command_class . ".php";
-
-        if (file_exists($file)) {
-            require_once $file;
+        if (class_exists($className)) {
             $c = new $className();
             $c->handle();
             return;

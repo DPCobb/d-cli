@@ -6,7 +6,7 @@ A Basic PHP CLI App Framework. This project is dependancy free and meant to be a
 
 ## Basic Setup
 
-Install with: ```composer require danc0/dcli``` or download the latest package.
+Install with: ```composer create-project danc0/dcli``` or download the latest package.
 
 After creating your main file (ex: ``src/dcli``) ensure you make that file executable and optionally add it to your path so you can call your application from anywhere. You will also want to create a Composer autoload file.
 
@@ -22,9 +22,9 @@ if (php_sapi_name() !== 'cli') {
 
 require_once __DIR__ . "/vendor/autoload.php";
 
-use dcli\App\Core\Application;
-use dcli\App\Core\Config;
-use dcli\App\Core\Command_Container;
+use App\Core\Application;
+use App\Core\Config;
+use App\Core\Command_Container;
 
 // Get any user set config values
 $config = Config::load(__DIR__ . "/App/config.ini")->get();
@@ -87,9 +87,9 @@ if (php_sapi_name() !== 'cli') {
 
 require_once __DIR__ . "/vendor/autoload.php";
 
-use dcli\App\Core\Application;
-use dcli\App\Core\Config;
-use dcli\App\Core\Command_Container;
+use App\Core\Application;
+use App\Core\Config;
+use App\Core\Command_Container;
 
 // Get any user set config values
 $config = Config::load(__DIR__ . "/App/config.ini")->get();
@@ -98,7 +98,7 @@ $command_container = new Command_Container($config, $argv);
 $app = Application::load($command_container);
 
 
-$app->set('hello-world', 'dcli\App\Commands\Hello\Test@test');
+$app->set('hello-world', 'App\Commands\Hello\Test@test');
 
 
 $app->run()
@@ -124,9 +124,9 @@ if (php_sapi_name() !== 'cli') {
 
 require_once __DIR__ . "/vendor/autoload.php";
 
-use dcli\App\Core\Application;
-use dcli\App\Core\Config;
-use dcli\App\Core\Command_Container;
+use App\Core\Application;
+use App\Core\Config;
+use App\Core\Command_Container;
 
 // Get any user set config values
 $config = Config::load(__DIR__ . "/App/config.ini")->get();

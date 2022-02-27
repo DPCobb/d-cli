@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "dcli\\": "src/"
+            "App\\": "src/App/"
         }
     },
     "require": {

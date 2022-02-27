@@ -1,6 +1,6 @@
 <?php
 
-namespace dcli\App\Core;
+namespace App\Core;
 
 class Config
 {

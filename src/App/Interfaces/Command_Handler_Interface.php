@@ -1,6 +1,6 @@
 <?php
 
-namespace dcli\App\Interfaces;
+namespace App\Interfaces;
 
 interface Command_Handler_Interface
 {

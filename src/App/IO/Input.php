@@ -1,8 +1,8 @@
 <?php
 
-namespace dcli\App\IO;
+namespace App\IO;
 
-use dcli\App\IO\Output;
+use App\IO\Output;
 
 class Input
 {

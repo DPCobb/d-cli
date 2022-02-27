@@ -1,6 +1,6 @@
 <?php
 
-namespace dcli\App\Utility;
+namespace App\Utility;
 
 final class Arr
 {
