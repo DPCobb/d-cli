@@ -3,6 +3,7 @@
 namespace App\Core;
 
 use App\Interfaces\Command_Container_Interface;
+use App\IO\Output;
 use Error;
 
 class Application
@@ -124,7 +125,7 @@ class Application
             return;
         }
 
-        echo "Command Not Found!";
+        Output::error("Command Not Found!");
         return;
     }
 
