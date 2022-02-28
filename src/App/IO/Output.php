@@ -22,17 +22,34 @@ class Output
         echo sprintf("\e[%sm%s\e[0m\n", $color, $message);
     }
 
+    public static function line()
+    {
+        echo "\n";
+    }
 
     public function __call($method, $args)
     {
         $color = $this->printer[$method] ?? $this->default_printer[$method];
-        return $this->output($args[0], $color);
+
+        $message = $args[0];
+        
+        if ($method === 'banner') {
+            $message = "     {$args[0]}     ";
+        }
+
+        return $this->output($message, $color);
     }
 
     public static function __callStatic($method, $args)
     {
         $out = new Output;
 
-        return $out->output($args[0], $out->default_printer[$method]);
+        $message = $args[0];
+
+        if ($method === 'banner') {
+            $message = "     {$args[0]}     ";
+        }
+
+        return $out->output($message, $out->default_printer[$method]);
     }
 }

@@ -39,6 +39,19 @@ class Command_Container implements Command_Container_Interface
                 $params = explode('=', $v);
                 $this->instance['params'][$params[0]] = $params[1];
             }
+
+            if (strpos($v, '-') !== false) {
+                $parts = explode('-', $v);
+
+                if ($parts[0] !== '') {
+                    continue;
+                }
+
+                $flags = str_split($parts[1]);
+                foreach ($flags as $flag) {
+                    $this->instance['flags'][] = $flag;
+                }
+            }
         }
     }
 
@@ -59,6 +72,9 @@ class Command_Container implements Command_Container_Interface
 
     public function hasFlag(string $key): bool
     {
+        if (empty($this->instance['flags'])) {
+            return false;
+        }
         return in_array($key, $this->instance['flags']);
     }
 }

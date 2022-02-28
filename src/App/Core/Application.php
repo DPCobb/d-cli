@@ -51,6 +51,13 @@ class Application
         $this->commands[$command_name] = $action;
     }
 
+    public function alias(array $alias, string $action)
+    {
+        foreach ($alias as $value) {
+            $this->set($value, $action);
+        }
+    }
+
     public function run()
     {
         $command = $this->Command_Container->get('command');
