@@ -2,7 +2,7 @@
 
 A Basic PHP CLI App Framework. This project is dependency free and meant to be a lightweight starting point for PHP CLI applications.
 
-A work in progress demo project and be found [here](https://github.com/DPCobb/dbver).
+A work in progress demo project can be found [here](https://github.com/DPCobb/dbver).
 
 ***These docs are a work in progress as this project is still in development.***
 
