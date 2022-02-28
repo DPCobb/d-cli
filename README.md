@@ -140,10 +140,6 @@ $app->run();
 ```
 The ```Application``` class handles the logic and routing of the calls.
 
-## Additional Classes
-
-The ```src/App/IO``` directory includes classes to help with Input/Output.
-
 ### Adding Command Alias's
 
 You can also add alias's for commands or alternate commands by simply adding the following code before the ```$app->run``` call.
@@ -167,3 +163,6 @@ dcli say-hi
 
 Alias's come in handy to offer shortcuts for calling sub-commands of a command. For example, if ```hello``` had a subcommand of ```world``` you could create a alias ```hw``` that targets the ```World::handle``` execution for ```dcli hello world```.
 
+## Additional Classes
+
+The ```src/App/IO``` directory includes classes to help with Input/Output.
