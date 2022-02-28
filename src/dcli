@@ -12,6 +12,7 @@ use App\Core\Config;
 use App\Core\Command_Container;
 use App\IO\Output;
 use App\IO\Input;
+use App\IO\Themes\Alt_Printer;
 
 // Get any user set config values
 $config = Config::load(__DIR__ . "/App/config.ini")->get();
@@ -21,7 +22,7 @@ $app = Application::load($command_container);
 
 
 $app->set('hello-world', function () {
-    $out = new Output;
+    $out = new Output(new Alt_Printer);
     $out->error('Hello World');
     $out->message('Hello World');
     $out->alert('Hello World');

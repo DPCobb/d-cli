@@ -10,9 +10,9 @@ class Output
     /**
      * printer
      *
-     * @var Printer_Interface|null
+     * @var array|null
      */
-    public ?Printer_Interface $printer;
+    public ?array $printer;
 
     /**
      * default_printer
@@ -24,7 +24,10 @@ class Output
     public function __construct(?Printer_Interface $printer = null)
     {
         // printer sets the color values
-        $this->printer = $printer;
+        $this->printer = null;
+        if (!is_null($printer)) {
+            $this->printer = $printer->getThemeSettings();
+        }
         $default_printer = new Default_Printer;
         $this->default_printer = $default_printer->getThemeSettings();
     }
@@ -78,6 +81,7 @@ class Output
 
     /**
      * Magic method so you can call these outputs statically
+     * Cannot currently use themes
      *
      * @param string $method
      * @param array $args
