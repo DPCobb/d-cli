@@ -7,27 +7,62 @@ use App\IO\Themes\Default_Printer;
 
 class Output
 {
+    /**
+     * printer
+     *
+     * @var Printer_Interface|null
+     */
     public ?Printer_Interface $printer;
+
+    /**
+     * default_printer
+     *
+     * @var array
+     */
     public array $default_printer;
 
     public function __construct(?Printer_Interface $printer = null)
     {
+        // printer sets the color values
         $this->printer = $printer;
         $default_printer = new Default_Printer;
         $this->default_printer = $default_printer->getThemeSettings();
     }
 
-    public function output(string $message, string $color)
+    /**
+     * Format output message
+     *
+     * @param string $message
+     * @param string $color
+     *
+     * @return void
+     */
+    public function output(string $message, string $color): void
     {
         echo sprintf("\e[%sm%s\e[0m\n", $color, $message);
+        return;
     }
 
-    public static function line()
+    /**
+     * Just a new line
+     *
+     * @return void
+     */
+    public static function line():void
     {
         echo "\n";
+        return;
     }
 
-    public function __call($method, $args)
+    /**
+     * Magic method to process output
+     *
+     * @param string $method
+     * @param array $args
+     *
+     * @return void
+     */
+    public function __call(string $method, array $args): void
     {
         $color = $this->printer[$method] ?? $this->default_printer[$method];
 
@@ -37,10 +72,19 @@ class Output
             $message = "     {$args[0]}     ";
         }
 
-        return $this->output($message, $color);
+        $this->output($message, $color);
+        return;
     }
 
-    public static function __callStatic($method, $args)
+    /**
+     * Magic method so you can call these outputs statically
+     *
+     * @param string $method
+     * @param array $args
+     *
+     * @return void
+     */
+    public static function __callStatic(string $method, array $args): void
     {
         $out = new Output;
 
@@ -50,6 +94,8 @@ class Output
             $message = "     {$args[0]}     ";
         }
 
-        return $out->output($message, $out->default_printer[$method]);
+        $out->output($message, $out->default_printer[$method]);
+
+        return;
     }
 }

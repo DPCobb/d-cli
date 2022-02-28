@@ -14,7 +14,26 @@ class Application
      * @var string
      */
     public string $command_path;
+
+    /**
+     * command_class
+     *
+     * @var string
+     */
+    public string $command_class;
+
+    /**
+     * Command_Container
+     *
+     * @var Command_Container_Interface
+     */
     public Command_Container_Interface $Command_Container;
+
+    /**
+     * instance
+     *
+     * @var Application|null
+     */
     public static ?Application $instance = null;
 
     public function __construct(Command_Container_Interface $Command_Container)
@@ -22,9 +41,17 @@ class Application
         $this->Command_Container = $Command_Container;
         $this->command_path = "App/Commands";
         $this->commands = [];
+        $this->command_class = "Default_Handler";
     }
 
-    public static function load(Command_Container_Interface $Command_Container)
+    /**
+     * Load an Application instance
+     *
+     * @param Command_Container_Interface $Command_Container
+     *
+     * @return Application
+     */
+    public static function load(Command_Container_Interface $Command_Container): Application
     {
         if (is_null(self::$instance)) {
             self::$instance = new Application($Command_Container);
@@ -33,11 +60,23 @@ class Application
         return self::$instance;
     }
 
+    /**
+     * Read the Application instance or return null
+     *
+     * @return mixed
+     */
     public static function read()
     {
         return self::$instance ?? null;
     }
 
+    /**
+     * Get the command Container
+     *
+     * @throws Error
+     *
+     * @return Command_Container_Interface
+     */
     public static function getCommandContainer(): Command_Container_Interface
     {
         if (is_null(self::$instance)) {
@@ -47,24 +86,58 @@ class Application
         return self::$instance->Command_Container;
     }
 
-    public function set(string $command_name, $action)
+    /**
+     * Set a command and it's action
+     *
+     * @param string $command_name
+     * @param mixed $action
+     *
+     * @return void
+     */
+    public function set(string $command_name, $action): void
     {
+        if (empty($action)) {
+            return;
+        }
         $this->commands[$command_name] = $action;
+
+        return;
     }
 
-    public function alias(array $alias, string $action)
+    /**
+     * Create alias's for commands
+     *
+     * @param array  $alias
+     * @param string $action
+     *
+     * @return void
+     */
+    public function alias(array $alias, string $action): void
     {
         foreach ($alias as $value) {
             $this->set($value, $action);
         }
+
+        return;
     }
 
-    public function run()
+    /**
+     * Run the application
+     *
+     * @return void
+     */
+    public function run(): void
     {
+        // Gets the passed command
         $command = $this->Command_Container->get('command');
 
+        // If this command is a set command figure it our here
         if (!empty($this->commands[$command])) {
             $action = $this->commands[$command];
+
+            if (empty($action)) {
+                return;
+            }
 
             // passed a function in
             if (is_callable($action)) {
@@ -76,9 +149,11 @@ class Application
             if (strpos($action, '@') !== false) {
                 $parts = explode('@', $action);
                 $c = new $parts[0];
+
                 if (method_exists($c, $parts[1])) {
                     call_user_func([$c, $parts[1]]);
                 }
+
                 return;
             }
         }
@@ -87,37 +162,30 @@ class Application
         $this->findCommand();
     }
 
-    public function findCommand()
+    /**
+     * Figure out what file we need to run in the Commands Dir
+     *
+     * @return void
+     */
+    public function findCommand(): void
     {
+        // Get the command
         $command = ucwords($this->Command_Container->get('command'));
 
+        // if the command has a dash we need to do some processing.
         if (strpos($command, '-')) {
-            $parts = explode('-', $command);
-            foreach ($parts as &$v) {
-                $v = ucwords($v);
-            }
-
-            $command = implode('_', $parts);
+            $command = $this->parseCommand($command);
         }
-
-        $command_class = "Default_Handler";
         
         if ($this->Command_Container->has('sub_command')) {
-            $command_class = ucwords($this->Command_Container->get('sub_command'));
+            $this->command_class = ucwords($this->Command_Container->get('sub_command'));
 
-            if (strpos($command_class, '-')) {
-                $parts = explode('-', $command_class);
-                foreach ($parts as &$v) {
-                    $v = ucwords($v);
-                }
-    
-                $command_class = implode('_', $parts);
+            if (strpos($this->command_class, '-')) {
+                $this->command_class = $this->parseCommand($this->command_class);
             }
         }
 
-        $namespace = sprintf("App\Commands\%s\%s", $command, $command_class);
-
-        $className = $namespace;
+        $className = sprintf("App\Commands\%s\%s", $command, $this->command_class);
 
         if (class_exists($className)) {
             $c = new $className();
@@ -129,7 +197,32 @@ class Application
         return;
     }
 
-    public function __get($arg)
+    /**
+     * Parse a command replacing - with _ and ucwords on all words
+     *
+     * @param string $command
+     * @return string
+     */
+    public function parseCommand(string $command): string
+    {
+        $parts = explode('-', $command);
+        foreach ($parts as &$v) {
+            $v = ucwords($v);
+        }
+
+        $command = implode('_', $parts);
+
+        return $command;
+    }
+
+    /**
+     * __get magic method
+     *
+     * @param string $arg
+     *
+     * @return mixed
+     */
+    public function __get(string $arg)
     {
         if (property_exists($this->Command_Container, $arg)) {
             return $this->Command_Container->$arg;
@@ -138,7 +231,15 @@ class Application
         return null;
     }
 
-    public function __call($arg, $params)
+    /**
+     * __call magic method
+     *
+     * @param string $arg
+     * @param array $params
+     *
+     * @return void
+     */
+    public function __call(string $arg, array $params)
     {
         if (method_exists($this->Command_Container, $arg)) {
             return call_user_func_array([$this->Command_Container, $arg], $params);

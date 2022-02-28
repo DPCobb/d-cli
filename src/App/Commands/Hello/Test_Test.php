@@ -4,7 +4,7 @@ namespace App\Commands\Hello;
 
 use App\Core\Application;
 
-class Test
+class Test_Test
 {
     public function handle()
     {
