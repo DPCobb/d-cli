@@ -5,7 +5,7 @@ namespace App\IO\Themes;
 use App\Interfaces\Printer_Interface;
 
 /**
- * Custom Printer Example, does not work with Static Calls
+ * Custom Printer Example
  */
 class Alt_Printer implements Printer_Interface
 {
