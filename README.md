@@ -2,6 +2,8 @@
 
 A Basic PHP CLI App Framework. This project is dependency free and meant to be a lightweight starting point for PHP CLI applications.
 
+***These docs are a work in progress as this project is still in development.***
+
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/dpcobb/d-cli?style=plastic) ![GitHub](https://img.shields.io/github/license/dpcobb/d-cli?style=plastic)
 
 ## Basic Setup
@@ -141,3 +143,27 @@ The ```Application``` class handles the logic and routing of the calls.
 ## Additional Classes
 
 The ```src/App/IO``` directory includes classes to help with Input/Output.
+
+### Adding Command Alias's
+
+You can also add alias's for commands or alternate commands by simply adding the following code before the ```$app->run``` call.
+
+```php
+$app->alias(['hw', 'hello-world', 'world', 'say-hi'], "App\Commands\Hello\Default_Handler@handle");
+```
+
+The commands above would trigger the same code execution as using the ```hello``` command.
+
+```bash
+# Actual Command
+dcli hello
+
+# Alias Commands
+dcli hw
+dcli hello-world
+dcli world
+dcli say-hi
+```
+
+Alias's come in handy to offer shortcuts for calling sub-commands of a command. For example, if ```hello``` had a subcommand of ```world``` you could create a alias ```hw``` that targets the ```World::handle``` execution for ```dcli hello world```.
+
