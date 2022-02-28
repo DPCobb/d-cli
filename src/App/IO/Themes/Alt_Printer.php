@@ -13,7 +13,7 @@ class Alt_Printer implements Printer_Interface
     {
         // Adding entries here allows for additional Output calls.
         return [
-            'error' => '0;37;41',
+            'error' => '0;36;41',
             'warning' => '0;37',
             'alert' => '0;31',
             'message' => '0;37',

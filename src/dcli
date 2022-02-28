@@ -22,6 +22,7 @@ $app = Application::load($command_container);
 
 
 $app->set('hello-world', function () {
+    //Output::load(new Alt_Printer); // This loads output with a custom printer for static use
     $out = new Output(new Alt_Printer);
     $out->error('Hello World');
     $out->message('Hello World');

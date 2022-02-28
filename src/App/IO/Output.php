@@ -21,6 +21,8 @@ class Output
      */
     public array $default_printer;
 
+    public static ?Output $instance = null;
+
     public function __construct(?Printer_Interface $printer = null)
     {
         // printer sets the color values
@@ -30,6 +32,15 @@ class Output
         }
         $default_printer = new Default_Printer;
         $this->default_printer = $default_printer->getThemeSettings();
+    }
+
+    public static function load(Printer_Interface $printer)
+    {
+        if (is_null(static::$instance)) {
+            static::$instance = new Output($printer);
+        }
+
+        return static::$instance;
     }
 
     /**
@@ -90,6 +101,11 @@ class Output
      */
     public static function __callStatic(string $method, array $args): void
     {
+        if (!is_null(static::$instance)) {
+            static::$instance->$method($args[0]);
+            return;
+        }
+
         $out = new Output;
 
         $message = $args[0];
