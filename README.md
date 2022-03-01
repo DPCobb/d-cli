@@ -168,3 +168,29 @@ Alias's come in handy to offer shortcuts for calling sub-commands of a command. 
 ## Additional Classes
 
 The ```src/App/IO``` directory includes classes to help with Input/Output.
+
+### Output Class
+
+Used to send colored output to the console. Colors are set in ```App/IO/Themes/Default_Printer.php``` and can be overwritten with a custom file. The keys you use are the keys you will call to process that color text. For example, ```Output::success``` would process the message using the success color.
+
+Additionally, the Output class can parse a ```.txt``` file for output. A simple syntax is used in the file.
+
+```bash
+# Color code text
+<[MESSAGE TYPE]> Some Message <end>
+ex:
+<success>Some Message<end>
+
+# Add A Variable:
+<info>{{[VARIABLE NAME]}}<end>
+ex:
+<info>{{version}}<end>
+```
+
+This function can be called either dynamically with ```Output::file``` or using the class method ```parseFile```. Both of these require the file path to be passed as the first argument and an optional array for variables ```[variable => value]```
+
+```php
+Output::file('/foo/bar/baz.txt', ['version'=>'1.0.0-beta']);
+```
+
+File parsing is helpful when outputting large sections of text, like help pages.
