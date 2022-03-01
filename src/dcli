@@ -22,17 +22,8 @@ $app = Application::load($command_container);
 
 
 $app->set('hello-world', function () {
-    //Output::load(new Alt_Printer); // This loads output with a custom printer for static use
     $out = new Output(new Alt_Printer);
-    $out->error('Hello World');
     $out->message('Hello World');
-    $out->alert('Hello World');
-    $out->warning('Hello World');
-    $out->info('Hello World');
-    $out->success('Hello World');
-    Output::error('Static Call');
-
-    Output::file(__DIR__ . "/App/Output_Files/test.txt", ['version' => '1.2.3-beta']);
 
     if (Input::affirm("Would you like to continue? Y/n")) {
         Output::success('CONTINUE');
@@ -43,7 +34,10 @@ $app->set('hello-world', function () {
     }
 });
 
-$app->set('world', 'App\Commands\Hello\Test@test');
+$app->set('help', function () {
+    Output::file(__DIR__ . "/App/Output_Files/test.txt", ['version' => '1.2.3-beta']);
+});
 
+$app->set('world', 'App\Commands\Hello\Default_Handler@world');
 
 $app->run();

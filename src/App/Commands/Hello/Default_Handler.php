@@ -8,6 +8,11 @@ class Default_Handler implements Command_Handler_Interface
 {
     public function handle()
     {
-        echo "hello command";
+        echo "Hello World";
+    }
+
+    public function world()
+    {
+        echo "World Hello";
     }
 }
