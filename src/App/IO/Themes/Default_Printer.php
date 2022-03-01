@@ -15,7 +15,8 @@ class Default_Printer implements Printer_Interface
             'message' => '0;37',
             'info' => '1;34',
             'success' => '0;32',
-            'banner' => '1;37;45'
+            'banner' => '1;37;45',
+            'caption' => '0;90',
         ];
     }
 }

@@ -32,6 +32,8 @@ $app->set('hello-world', function () {
     $out->success('Hello World');
     Output::error('Static Call');
 
+    Output::file(__DIR__ . "/App/Output_Files/test.txt", ['version' => '1.2.3-beta']);
+
     if (Input::affirm("Would you like to continue? Y/n")) {
         Output::success('CONTINUE');
     }

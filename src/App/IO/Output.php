@@ -34,6 +34,13 @@ class Output
         $this->default_printer = $default_printer->getThemeSettings();
     }
 
+    /**
+     * Load a custom printer for static Output calls
+     *
+     * @param Printer_Interface $printer
+     *
+     * @return object
+     */
     public static function load(Printer_Interface $printer)
     {
         if (is_null(static::$instance)) {
@@ -54,6 +61,85 @@ class Output
     public function output(string $message, string $color): void
     {
         echo sprintf("\e[%sm%s\e[0m\n", $color, $message);
+        return;
+    }
+
+    /**
+     * Parse a file for output, good for static output ie help pages
+     *
+     * @param string $filename
+     * @param array $variables
+     *
+     * @return void
+     */
+    public function parseFile(string $filename, array $variables = []): void
+    {
+        if (!file_exists($filename)) {
+            throw new Error("Cannot find file to parse: $filename");
+        }
+
+        $template = file_get_contents($filename);
+
+        $printer = is_null($this->printer) ? $this->default_printer : $this->printer;
+
+        $template = $this->processMessageTypes($template, $printer);
+        // Just in case there is a default tag not overwritten in custom printer
+        $template = $this->processMessageTypes($template, $this->default_printer);
+
+        if (!empty($variables)) {
+            foreach ($variables as $key => $value) {
+                // uses three because 2 in the template 1 for PHP literal
+                $key_tag = "{{{$key}}}";
+
+                $template = str_replace($key_tag, $value, $template);
+            }
+        }
+
+        echo $template;
+        return;
+    }
+
+    /**
+     * Adds the color codes for specific message types to file
+     *
+     * @param string $template
+     * @param array $printer
+     *
+     * @return string
+     */
+    public function processMessageTypes(string $template, array $printer): string
+    {
+        foreach ($printer as $method => $color) {
+            $color_code = sprintf("\e[%sm", $color);
+            $method_tag = "<$method>";
+            $template = str_replace($method_tag, $color_code, $template);
+        }
+
+        $end_tag = "<end>";
+        $end_code = sprintf("\e[0m");
+
+        $template = str_replace($end_tag, $end_code, $template);
+
+        return $template;
+    }
+
+    /**
+     * Statically call a file to parse
+     *
+     * @param string $filename
+     * @param array $variables
+     *
+     * @return void
+     */
+    public static function file(string $filename, array $variables = []): void
+    {
+        if (!is_null(static::$instance)) {
+            static::$instance->parseFile($filename, $variables);
+            return;
+        }
+
+        $out = new Output;
+        $out->parseFile($filename, $variables);
         return;
     }
 
@@ -92,7 +178,7 @@ class Output
 
     /**
      * Magic method so you can call these outputs statically
-     * Cannot currently use themes
+     * Can use theme if Output::load is called first with custom printer
      *
      * @param string $method
      * @param array $args
