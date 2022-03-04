@@ -4,6 +4,7 @@ namespace App\Core;
 
 use App\Interfaces\Command_Container_Interface;
 use App\IO\Output;
+use App\Core\Command_Validator;
 use Error;
 
 class Application
@@ -30,6 +31,13 @@ class Application
     public Command_Container_Interface $Command_Container;
 
     /**
+     * Command_Validator
+     *
+     * @var Command_Validator
+     */
+    public Command_Validator $Command_Validator;
+
+    /**
      * instance
      *
      * @var Application|null
@@ -39,6 +47,7 @@ class Application
     public function __construct(Command_Container_Interface $Command_Container)
     {
         $this->Command_Container = $Command_Container;
+        $this->Command_Validator = new Command_Validator($Command_Container);
         $this->command_path = "App/Commands";
         $this->commands = [];
         $this->command_class = "Default_Handler";
@@ -189,69 +198,14 @@ class Application
 
         if (class_exists($className)) {
             $c = new $className();
-            $this->processPassedArgs('flags', $c->flags ?? []);
-            $this->processPassedArgs('params', $c->parameters ?? []);
-            $this->checkRequiredParams($c->required_parameters ?? []);
+            $this->Command_Validator->processPassedArgs('flags', $c->flags ?? []);
+            $this->Command_Validator->processPassedArgs('params', $c->parameters ?? []);
+            $this->Command_Validator->checkRequiredParams($c->required_parameters ?? []);
             $c->handle();
             return;
         }
 
-        Output::error("Command Not Found!");
-        return;
-    }
-
-    /**
-     * Ensure any passed flags or parameters are allowed
-     *
-     * @param string $type
-     *
-     * @param array $allowed
-     * @return void
-     */
-    public function processPassedArgs(string $type, array $allowed): void
-    {
-        if (empty($allowed)) {
-            return;
-        }
-        $sent = $this->Command_Container->get($type);
-
-        foreach ($sent as $k => $v) {
-            if ($type !== 'flags') {
-                if (!in_array($k, $allowed)) {
-                    Output::error("Unknown parameter: $k");
-                    exit;
-                }
-                continue;
-            }
-
-            if (!in_array($v, $allowed)) {
-                Output::error("Unknown flag: $v");
-                exit;
-            }
-        }
-    }
-
-    /**
-     * Check that any required params are present
-     *
-     * @param array $required
-     *
-     * @return void
-     */
-    public function checkRequiredParams(array $required): void
-    {
-        if (empty($required)) {
-            return;
-        }
-
-        $sent = $this->Command_Container->get('params');
-
-        foreach ($required as $key) {
-            if (!array_key_exists($key, $sent)) {
-                Output::error("Missing required parameter: $key");
-                exit;
-            }
-        }
+        Output::error("ERROR!!!!!\nCommand Not Found!");
         return;
     }
 

@@ -65,6 +65,39 @@ class Output
     }
 
     /**
+     * Pass a multi line message
+     *
+     * @param array $lines
+     * @param string $type
+     *
+     * @return void
+     */
+    public function multiLine(array $lines, string $type): void
+    {
+        $this->$type(implode("\n", $lines));
+    }
+
+    /**
+     * Static multi line message call
+     *
+     * @param array $lines
+     * @param string $type
+     *
+     * @return void
+     */
+    public static function multi(array $lines, string $type): void
+    {
+        if (!is_null(static::$instance)) {
+            static::$instance->multiLine($lines, $type);
+            return;
+        }
+
+        $out = new Output;
+        $out->multiLine($lines, $type);
+        return;
+    }
+
+    /**
      * Parse a file for output, good for static output ie help pages
      *
      * @param string $filename
@@ -155,6 +188,27 @@ class Output
     }
 
     /**
+     * Full width message in console
+     *
+     * @param string $message
+     *
+     * @return string
+     */
+    public function fullWidthMessage(string $message_in): string
+    {
+        $width = (int)shell_exec('tput cols');
+        $remaining_width = $width - strlen($message_in);
+
+        if ($remaining_width > 0) {
+            $message = str_repeat('=', $width);
+            $message .= "\n{$message_in}\n";
+            $message .= str_repeat('=', $width);
+        }
+
+        return $message;
+    }
+
+    /**
      * Magic method to process output
      *
      * @param string $method
@@ -167,9 +221,9 @@ class Output
         $color = $this->printer[$method] ?? $this->default_printer[$method];
 
         $message = $args[0];
-        
-        if ($method === 'banner') {
-            $message = "     {$args[0]}     ";
+
+        if ($method === 'banner' || $method === 'error') {
+            $message = $this->fullWidthMessage($message);
         }
 
         $this->output($message, $color);
@@ -196,8 +250,8 @@ class Output
 
         $message = $args[0];
 
-        if ($method === 'banner') {
-            $message = "     {$args[0]}     ";
+        if ($method === 'banner' || $method === 'error') {
+            $message = $out->fullWidthMessage($message);
         }
 
         $out->output($message, $out->default_printer[$method]);
