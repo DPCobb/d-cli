@@ -35,6 +35,7 @@ class Command_Container implements Command_Container_Interface
         // Empty instance array
         $this->instance = [];
         $this->instance['flags'] = [];
+        $this->instance['params'] = [];
 
         $this->processArgs($args);
     }

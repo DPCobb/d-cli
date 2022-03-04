@@ -189,11 +189,69 @@ class Application
 
         if (class_exists($className)) {
             $c = new $className();
+            $this->processPassedArgs('flags', $c->flags ?? []);
+            $this->processPassedArgs('params', $c->parameters ?? []);
+            $this->checkRequiredParams($c->required_parameters ?? []);
             $c->handle();
             return;
         }
 
         Output::error("Command Not Found!");
+        return;
+    }
+
+    /**
+     * Ensure any passed flags or parameters are allowed
+     *
+     * @param string $type
+     *
+     * @param array $allowed
+     * @return void
+     */
+    public function processPassedArgs(string $type, array $allowed): void
+    {
+        if (empty($allowed)) {
+            return;
+        }
+        $sent = $this->Command_Container->get($type);
+
+        foreach ($sent as $k => $v) {
+            if ($type !== 'flags') {
+                if (!in_array($k, $allowed)) {
+                    Output::error("Unknown parameter: $k");
+                    exit;
+                }
+                continue;
+            }
+
+            if (!in_array($v, $allowed)) {
+                Output::error("Unknown flag: $v");
+                exit;
+            }
+        }
+    }
+
+    /**
+     * Check that any required params are present
+     *
+     * @param array $required
+     *
+     * @return void
+     */
+    public function checkRequiredParams(array $required): void
+    {
+        if (empty($required)) {
+            return;
+        }
+
+        $sent = $this->Command_Container->get('params');
+
+        foreach ($required as $key) {
+            if (!array_key_exists($key, $sent)) {
+                Output::error("Missing required parameter: $key");
+                exit;
+            }
+        }
         return;
     }
 
