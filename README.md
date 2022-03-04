@@ -2,9 +2,9 @@
 
 A Basic PHP CLI App Framework. This project is dependency free and meant to be a lightweight starting point for PHP CLI applications.
 
-A work in progress demo project can be found [here](https://github.com/DPCobb/dbver).
-
 ***These docs are a work in progress as this project is still in development.***
+
+[Full Documentation](https://github.com/DPCobb/d-cli/wiki)
 
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/dpcobb/d-cli?style=plastic) ![GitHub](https://img.shields.io/github/license/dpcobb/d-cli?style=plastic)
 
@@ -47,35 +47,6 @@ $app->run();
 
 This is the most basic possible usage and does not take advantage of sub commands.
 
-### Getting Params and Flags
-
-You can access params (```foo=bar```) and flags (```--baz```) through the ```Application``` class or through the ```Command_Container```.
-
-```php
-// Get through Application
-
-$app->get('params');
-$app->get('flags');
-
-// Get a specific param
-$app->get('params.foo');
-
-// Get from Command Container
-
-$command_container->get('params');
-$command_container->get('flags');
-
-// Get a specific param
-$command_container->get('params.foo');
-
-// From inside a class
-$cc = Application::getCommandContainer();
-
-$cc->get('params');
-
-```
-
-Params must be passed as ```name=value``` and flags are passed with double dashes ```--foo```.
 
 ## Passing Class@method to Call
 
@@ -141,56 +112,3 @@ $app = Application::load($command_container);
 $app->run();
 ```
 The ```Application``` class handles the logic and routing of the calls.
-
-### Adding Command Alias's
-
-You can also add alias's for commands or alternate commands by simply adding the following code before the ```$app->run``` call.
-
-```php
-$app->alias(['hw', 'hello-world', 'world', 'say-hi'], "App\Commands\Hello\Default_Handler@handle");
-```
-
-The commands above would trigger the same code execution as using the ```hello``` command.
-
-```bash
-# Actual Command
-dcli hello
-
-# Alias Commands
-dcli hw
-dcli hello-world
-dcli world
-dcli say-hi
-```
-
-Alias's come in handy to offer shortcuts for calling sub-commands of a command. For example, if ```hello``` had a subcommand of ```world``` you could create a alias ```hw``` that targets the ```World::handle``` execution for ```dcli hello world```.
-
-## Additional Classes
-
-The ```src/App/IO``` directory includes classes to help with Input/Output.
-
-### Output Class
-
-Used to send colored output to the console. Colors are set in ```App/IO/Themes/Default_Printer.php``` and can be overwritten with a custom file. The keys you use are the keys you will call to process that color text. For example, ```Output::success``` would process the message using the success color.
-
-Additionally, the Output class can parse a ```.txt``` file for output. A simple syntax is used in the file.
-
-```bash
-# Color code text
-<[MESSAGE TYPE]> Some Message <end>
-ex:
-<success>Some Message<end>
-
-# Add A Variable:
-<info>{{[VARIABLE NAME]}}<end>
-ex:
-<info>{{version}}<end>
-```
-
-This function can be called either dynamically with ```Output::file``` or using the class method ```parseFile```. Both of these require the file path to be passed as the first argument and an optional array for variables ```[variable => value]```
-
-```php
-Output::file('/foo/bar/baz.txt', ['version'=>'1.0.0-beta']);
-```
-
-File parsing is helpful when outputting large sections of text, like help pages.
