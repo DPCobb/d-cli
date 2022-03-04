@@ -81,7 +81,7 @@ $app->run()
 
 This will call the ```test``` method in the ```Test``` class.
 
-## Advanced Structure
+## File Structure Controlled Commands
 
 This method makes use of sub commands. To use the advanced structure a specific project layout is required. Your classes that will handle the commands must be placed in the ```src/App/Commands``` directory. The command should be a sub folder. For example, the command ```hello``` should be placed in ```src/App/Commands/Hello```. Within that directory a file named ```Default_Handler.php``` should be created. This, and all classes in the ```src/App/Commands``` directory should implement ```Command_Handler_Interface```. This is the file that will be called on the command ```hello```.
 
