@@ -24,6 +24,13 @@ class Application
     public string $command_class;
 
     /**
+     * commands
+     *
+     * @var array
+     */
+    public array $commands;
+
+    /**
      * Command_Container
      *
      * @var Command_Container_Interface

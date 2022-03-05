@@ -17,6 +17,13 @@ class Hello_Event implements Event_Provider_Interface
         Output::banner('Goodbye!');
     }
 
+    /**
+     * Method also fired during goodbye-world event
+     *
+     * @param string $event
+     *
+     * @return void
+     */
     public function test(string $event)
     {
         Output::success('Sent to test from ' . $event);
