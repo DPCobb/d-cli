@@ -63,7 +63,7 @@ class Event_Handler implements Event_Handler_Interface
 
         foreach ($listeners as $k => $action) {
             if (is_array($action)) {
-                $this->runNamedMethodEvent($action);
+                $this->runNamedMethodEvent($action, $event);
                 continue;
             }
             call_user_func_array([$action, 'run'], [$event]);
@@ -78,7 +78,7 @@ class Event_Handler implements Event_Handler_Interface
      *
      * @return void
      */
-    public function runNamedMethodEvent(array $action): void
+    public function runNamedMethodEvent(array $action, string $event): void
     {
         if (method_exists($action['class'], $action['method'])) {
             call_user_func_array([$action['class'], $action['method']], [$event]);
