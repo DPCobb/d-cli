@@ -5,6 +5,7 @@ namespace App\Core;
 use App\Interfaces\Command_Container_Interface;
 use App\IO\Output;
 use App\Core\Command_Validator;
+use App\Core\Event_Handler;
 use Error;
 
 class Application
@@ -51,6 +52,13 @@ class Application
      */
     public static ?Application $instance = null;
 
+    /**
+     * Event
+     *
+     * @var Event_Handler
+     */
+    public Event_Handler $Event;
+
     public function __construct(Command_Container_Interface $Command_Container)
     {
         $this->Command_Container = $Command_Container;
@@ -58,6 +66,7 @@ class Application
         $this->command_path = "App/Commands";
         $this->commands = [];
         $this->command_class = "Default_Handler";
+        $this->Event = new Event_Handler;
     }
 
     /**
