@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Core;
 
 use App\Interfaces\Event_Handler_Interface;

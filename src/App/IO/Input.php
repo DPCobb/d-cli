@@ -1,5 +1,4 @@
 <?php
-
 namespace App\IO;
 
 use App\IO\Output;
@@ -32,7 +31,7 @@ class Input
         $response = readline();
 
         preg_match("/^(y|Y|yes|YES|Yes|True|true)\b/m", $response, $match);
-        
+
         return !empty($match);
     }
 
@@ -52,7 +51,7 @@ class Input
         if (!empty($required)) {
             // if response is not one of the required answers output a warning and try again
             if (!in_array($response, $required)) {
-                $second_try = Input::get("Please enter one of the following answers: " . implode('/', $required));
+                $second_try = Input::get('Please enter one of the following answers: ' . implode('/', $required));
                 if (!in_array($second_try, $required)) {
                     Output::error('Your answer could not be processed. Exiting now.');
                     die;
@@ -61,7 +60,7 @@ class Input
         }
 
         preg_match("/^(y|Y|yes|YES|Yes|True|true)\b/m", $response, $match);
-        
+
         return !empty($match);
     }
 }

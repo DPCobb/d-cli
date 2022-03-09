@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Core;
 
 use App\Interfaces\Command_Container_Interface;
@@ -7,7 +6,6 @@ use App\IO\Output;
 
 class Command_Validator
 {
-
     /**
      * command_container
      *
@@ -38,14 +36,14 @@ class Command_Validator
         foreach ($sent as $k => $v) {
             if ($type !== 'flags') {
                 if (!in_array($k, $allowed)) {
-                    Output::multi(['ERROR!!!!!', 'Unknown parameter: ' . $k, "Allowed parameters are: " . implode(', ', $allowed)], 'error');
+                    Output::multi(['ERROR!!!!!', 'Unknown parameter: ' . $k, 'Allowed parameters are: ' . implode(', ', $allowed)], 'error');
                     exit;
                 }
                 continue;
             }
 
             if (!in_array($v, $allowed)) {
-                Output::multi(['ERROR!!!!!', 'Unknown flag: ' . $v, "Allowed flags are: " . implode(', ', $allowed)], 'error');
+                Output::multi(['ERROR!!!!!', 'Unknown flag: ' . $v, 'Allowed flags are: ' . implode(', ', $allowed)], 'error');
                 exit;
             }
         }
@@ -68,7 +66,7 @@ class Command_Validator
 
         foreach ($required as $key) {
             if (!array_key_exists($key, $sent)) {
-                Output::multi(['ERROR!!!!!', "Missing required parameter: $key", "Parameters sent: " . implode(', ', $sent)], 'error');
+                Output::multi(['ERROR!!!!!', "Missing required parameter: $key", 'Parameters sent: ' . implode(', ', $sent)], 'error');
                 exit;
             }
         }

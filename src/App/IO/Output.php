@@ -1,9 +1,9 @@
 <?php
-
 namespace App\IO;
 
 use App\Interfaces\Printer_Interface;
 use App\IO\Themes\Default_Printer;
+use Error;
 
 class Output
 {
@@ -30,7 +30,7 @@ class Output
         if (!is_null($printer)) {
             $this->printer = $printer->getThemeSettings();
         }
-        $default_printer = new Default_Printer;
+        $default_printer       = new Default_Printer;
         $this->default_printer = $default_printer->getThemeSettings();
     }
 
@@ -145,10 +145,10 @@ class Output
         foreach ($printer as $method => $color) {
             $color_code = sprintf("\e[%sm", $color);
             $method_tag = "<$method>";
-            $template = str_replace($method_tag, $color_code, $template);
+            $template   = str_replace($method_tag, $color_code, $template);
         }
 
-        $end_tag = "<end>";
+        $end_tag  = '<end>';
         $end_code = sprintf("\e[0m");
 
         $template = str_replace($end_tag, $end_code, $template);
@@ -196,7 +196,7 @@ class Output
      */
     public function fullWidthMessage(string $message_in): string
     {
-        $width = (int)shell_exec('tput cols');
+        $width           = (int)shell_exec('tput cols');
         $remaining_width = $width - strlen($message_in);
 
         if ($remaining_width > 0) {

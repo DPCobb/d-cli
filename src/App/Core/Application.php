@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Core;
 
 use App\Interfaces\Command_Container_Interface;
@@ -63,10 +62,10 @@ class Application
     {
         $this->Command_Container = $Command_Container;
         $this->Command_Validator = new Command_Validator($Command_Container);
-        $this->command_path = "App/Commands";
-        $this->commands = [];
-        $this->command_class = "Default_Handler";
-        $this->Event = new Event_Handler;
+        $this->command_path      = 'App/Commands';
+        $this->commands          = [];
+        $this->command_class     = 'Default_Handler';
+        $this->Event             = new Event_Handler;
     }
 
     /**
@@ -173,7 +172,7 @@ class Application
             // passed a class @ method ex: App\Commands\Hello\Test@helloWorld
             if (strpos($action, '@') !== false) {
                 $parts = explode('@', $action);
-                $c = new $parts[0];
+                $c     = new $parts[0];
 
                 if (method_exists($c, $parts[1])) {
                     call_user_func([$c, $parts[1]]);
@@ -201,7 +200,7 @@ class Application
         if (strpos($command, '-')) {
             $command = $this->parseCommand($command);
         }
-        
+
         if ($this->Command_Container->has('sub_command')) {
             $this->command_class = ucwords($this->Command_Container->get('sub_command'));
 

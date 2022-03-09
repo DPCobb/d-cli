@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Commands\Hello;
 
 use App\Interfaces\Event_Provider_Interface;
@@ -49,14 +48,14 @@ class Hello_Event implements Event_Provider_Interface
             }
             $v = ucwords($v);
         }
-        $event_name_parsed = implode($parts, '');
+        $event_name_parsed = implode('_', $parts);
 
         // If we have a method call it
         if (method_exists($this, $event_name_parsed)) {
             call_user_func([$this, $event_name_parsed]);
             return;
         }
-        
+
         // If not process it here...
         Output::banner($event_name);
         return;

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Core;
 
 use App\Interfaces\Command_Container_Interface;
@@ -27,14 +26,14 @@ class Command_Container implements Command_Container_Interface
     {
         // Drop the config into a class so we can do config->foo or config->foo[bar] etc
         $this->config = new stdClass();
-        
+
         foreach ($config as $k => $v) {
             $this->config->$k = $v;
         }
 
         // Empty instance array
-        $this->instance = [];
-        $this->instance['flags'] = [];
+        $this->instance           = [];
+        $this->instance['flags']  = [];
         $this->instance['params'] = [];
 
         $this->processArgs($args);
@@ -64,8 +63,8 @@ class Command_Container implements Command_Container_Interface
         foreach ($args as $k => $v) {
             $this->processFlags($v);
 
-            if (strpos($v, "=") !== false) {
-                $params = explode('=', $v);
+            if (strpos($v, '=') !== false) {
+                $params                               = explode('=', $v);
                 $this->instance['params'][$params[0]] = $params[1];
             }
         }
@@ -83,7 +82,7 @@ class Command_Container implements Command_Container_Interface
     public function processFlags(string $value): void
     {
         // --foo flags
-        if (strpos($value, "--") !== false) {
+        if (strpos($value, '--') !== false) {
             $this->instance['flags'][] = str_replace('--', '', $value);
         }
 
@@ -159,7 +158,7 @@ class Command_Container implements Command_Container_Interface
         if (empty($this->instance['flags'])) {
             return false;
         }
-        
+
         return in_array($key, $this->instance['flags']);
     }
 }
