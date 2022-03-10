@@ -3,6 +3,7 @@
 A Basic PHP CLI App Framework. This project is dependency free and meant to be a lightweight starting point for PHP CLI applications.
 
 ***These docs are a work in progress as this project is still in development.***
+
 [Work In Progress Demo Project](https://github.com/DPCobb/dbcon)
 
 [Full Documentation](https://github.com/DPCobb/d-cli/wiki)
