@@ -54,7 +54,7 @@ class Command_Container implements Command_Container_Interface
         // IF we have a sub command
         if (!empty($args[2]) && strpos($args[2], '--') === false && strpos($args[2], '=') === false) {
             // ignore if we are a -fOo flag
-            if (!preg_match("/-\w+/", $args[2])) {
+            if (!preg_match("/^-\w+/", $args[2])) {
                 $this->instance['sub_command'] = Cleaner::clean($args[2]);
             }
         }
