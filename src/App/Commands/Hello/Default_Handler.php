@@ -49,8 +49,10 @@ class Default_Handler implements Command_Handler_Interface
     public function handle()
     {
         Output::message('Hello World');
-        $this->ev->dispatch('hello-world');
-        $this->ev->dispatch('goodbye-world');
+        if (!$this->d && !$this->dryRun) {
+            $this->ev->dispatch('hello-world');
+            $this->ev->dispatch('goodbye-world');
+        }
     }
 
     public function world()
