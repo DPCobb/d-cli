@@ -1,7 +1,7 @@
 <?php
 namespace App\Core;
 
-use App\Interfaces\Command_Container_Interface;
+use App\Interfaces\Container_Interface;
 use App\IO\Output;
 use App\Core\Command_Validator;
 use App\Core\Event_Handler;
@@ -33,9 +33,9 @@ class Application
     /**
      * Command_Container
      *
-     * @var Command_Container_Interface
+     * @var Container_Interface
      */
-    public Command_Container_Interface $Command_Container;
+    public Container_Interface $Command_Container;
 
     /**
      * Command_Validator
@@ -58,10 +58,9 @@ class Application
      */
     public Event_Handler $Event;
 
-    public function __construct(Command_Container_Interface $Command_Container)
+    public function __construct(Container_Interface $Command_Container)
     {
         $this->Command_Container = $Command_Container;
-        $this->Command_Validator = new Command_Validator($Command_Container);
         $this->command_path      = 'App/Commands';
         $this->commands          = [];
         $this->command_class     = 'Default_Handler';
@@ -71,11 +70,11 @@ class Application
     /**
      * Load an Application instance
      *
-     * @param Command_Container_Interface $Command_Container
+     * @param Container_Interface $Command_Container
      *
      * @return Application
      */
-    public static function load(Command_Container_Interface $Command_Container): Application
+    public static function load(Container_Interface $Command_Container): Application
     {
         if (is_null(self::$instance)) {
             self::$instance = new Application($Command_Container);
@@ -99,9 +98,9 @@ class Application
      *
      * @throws Error
      *
-     * @return Command_Container_Interface
+     * @return Container_Interface
      */
-    public static function getCommandContainer(): Command_Container_Interface
+    public static function getCommandContainer(): Container_Interface
     {
         if (is_null(self::$instance)) {
             throw new Error('Application is not yet instantiated.');
@@ -153,7 +152,7 @@ class Application
     public function run(): void
     {
         // Gets the passed command
-        $command = $this->Command_Container->get('command');
+        $command = $this->Command_Container->Environment->command;
 
         // If this command is a set command figure it our here
         if (!empty($this->commands[$command])) {
@@ -194,7 +193,7 @@ class Application
     public function findCommand(): void
     {
         // Get the command
-        $command = ucwords($this->Command_Container->get('command'));
+        $command = ucwords($this->Command_Container->Environment->command);
 
         // if the command has a dash we need to do some processing.
         if (strpos($command, '-')) {
@@ -202,7 +201,7 @@ class Application
         }
 
         if ($this->Command_Container->has('sub_command')) {
-            $this->command_class = ucwords($this->Command_Container->get('sub_command'));
+            $this->command_class = ucwords($this->Command_Container->Environment->sub_command);
 
             if (strpos($this->command_class, '-')) {
                 $this->command_class = $this->parseCommand($this->command_class);
@@ -213,9 +212,6 @@ class Application
 
         if (class_exists($className)) {
             $c = new $className();
-            $this->Command_Validator->processPassedArgs('flags', $c->flags ?? []);
-            $this->Command_Validator->processPassedArgs('params', $c->parameters ?? []);
-            $this->Command_Validator->checkRequiredParams($c->required_parameters ?? []);
             $c->handle();
             return;
         }
