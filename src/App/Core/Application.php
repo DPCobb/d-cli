@@ -5,6 +5,7 @@ use App\Interfaces\Container_Interface;
 use App\IO\Output;
 use App\Core\Command_Validator;
 use App\Core\Event_Handler;
+use App\Core\Command_Runner;
 use Error;
 
 class Application
@@ -36,13 +37,6 @@ class Application
      * @var Container_Interface
      */
     public Container_Interface $Command_Container;
-
-    /**
-     * Command_Validator
-     *
-     * @var Command_Validator
-     */
-    public Command_Validator $Command_Validator;
 
     /**
      * instance
@@ -171,11 +165,8 @@ class Application
             // passed a class @ method ex: App\Commands\Hello\Test@helloWorld
             if (strpos($action, '@') !== false) {
                 $parts = explode('@', $action);
-                $c     = new $parts[0];
-
-                if (method_exists($c, $parts[1])) {
-                    call_user_func([$c, $parts[1]]);
-                }
+                $Command_Runner = new Command_Runner($this->Command_Container, $parts[0]);
+                $Command_Runner->run($parts[1]);
 
                 return;
             }
@@ -210,13 +201,9 @@ class Application
 
         $className = sprintf("App\Commands\%s\%s", $command, $this->command_class);
 
-        if (class_exists($className)) {
-            $c = new $className();
-            $c->handle();
-            return;
-        }
+        $Command_Runner = new Command_Runner($this->Command_Container, $className);
+        $Command_Runner->run();
 
-        Output::error("ERROR!!!!!\nCommand Not Found!");
         return;
     }
 

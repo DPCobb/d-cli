@@ -8,6 +8,6 @@ class Command_Environment extends Environment
 {
     public string $command;
     public string $sub_command;
-    public array $arguments;
-    public array $flags;
+    public array $arguments = [];
+    public array $flags = [];
 }
