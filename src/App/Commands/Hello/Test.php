@@ -37,18 +37,20 @@ class Test implements Command_Handler_Interface
     public array $required_arguments = [];
 
     public Command_Container $Command_Container;
+    public Event_Handler $Event_Handler;
 
-    public function __construct()
+    public function __construct(Event_Handler $Event_Handler)
     {
-        $this->ev = new Event_Handler;
-        $this->ev->subscribe('hello-world', new Hello_Event);
-        $this->ev->subscribe('goodbye-world', new Hello_Event);
-        $this->ev->subscribe('goodbye-world', new Hello_Event, 'test');
+        $this->Event_Handler = $Event_Handler;
+        $this->Event_Handler->subscribe('hello-world', new Hello_Event);
+        $this->Event_Handler->subscribe('goodbye-world', new Hello_Event);
+        $this->Event_Handler->subscribe('goodbye-world', new Hello_Event, 'test');
     }
 
     public function handle()
     {
         Output::message('Hello World TEST' . $this->name);
+        $this->Event_Handler->dispatch('hello-world');
     }
 
     public function test()

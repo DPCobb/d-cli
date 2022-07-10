@@ -156,3 +156,7 @@ The command runner will automatically set these variables within your class when
 ## Command_Container
 
 The Command_Container holds information about your Config and your Request Environment. To tell the Command Runner to load this into your handler class you can do one of two things. First you can declare a variable in your class `public Command_Container $Command_Container` this will be set AFTER the class is instantiated so you will not have access in the constructor, but will in the other methods of your class. If you need this available in your constructor function add `Command_Container $Command_Container` as a variable that needs to be passed into the class.
+
+## Event_Handler Global
+
+The main Application Event_Handler can be injected into your handler classes using the same two techniques outlined above for the `Command_Container`

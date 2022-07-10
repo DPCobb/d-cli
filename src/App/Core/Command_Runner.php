@@ -1,6 +1,7 @@
 <?php
 namespace App\Core;
 
+use App\Core\Application;
 use App\Core\Command_Container;
 use App\Interfaces\Command_Handler_Interface;
 use ReflectionClass;
@@ -65,11 +66,14 @@ class Command_Runner
 
         $params = []; // eventually we should dependency inject other requirements
 
-        // inject Command_Container into constructor if needed
+        // inject Command_Container/Event_Handler into constructor if needed
         foreach ($constructor_params as $param) {
             $param_name = $param->getClass()->name;
             if ($param_name === 'App\\Core\\Command_Container') {
                 $params[$param->name] = $this->Command_Container;
+            }
+            if ($param_name === 'App\\Core\\Event_Handler') {
+                $params[$param->name] = Application::read()->Event;
             }
         }
 
@@ -98,8 +102,12 @@ class Command_Runner
         $instance = $this->setArguments($arguments_present, $arguments, $instance);
 
         // inject the command container if property is set
-        if ($item->hasProperty('Command_Container')) {
+        if ($item->hasProperty('Command_Container') && !isset($instance->Command_Container)) {
             $instance->Command_Container = $this->Command_Container;
+        }
+        // inject the global event handler
+        if ($item->hasProperty('Event_Handler') && !isset($instance->Event_Handler)) {
+            $instance->Event_Handler = Application::read()->Event;
         }
 
         // Handle
