@@ -34,7 +34,7 @@ class Test implements Command_Handler_Interface
      *
      * @var array
      */
-    public array $required_arguments = ['name'];
+    public array $required_arguments = [];
 
     public Command_Container $Command_Container;
 
@@ -49,6 +49,10 @@ class Test implements Command_Handler_Interface
     public function handle()
     {
         Output::message('Hello World TEST' . $this->name);
-        var_dump($this->Command_Container);
+    }
+
+    public function test()
+    {
+        Output::message('Hello World TEST' . $this->name);
     }
 }

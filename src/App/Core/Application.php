@@ -172,7 +172,6 @@ class Application
                 } catch (Exception $e) {
                     Output::error($e->getMessage());
                 }
-
                 return;
             }
         }

@@ -67,7 +67,7 @@ class Output
     /**
      * Pass a multi line message
      *
-     * @param array $lines
+     * @param array  $lines
      * @param string $type
      *
      * @return void
@@ -80,7 +80,7 @@ class Output
     /**
      * Static multi line message call
      *
-     * @param array $lines
+     * @param array  $lines
      * @param string $type
      *
      * @return void
@@ -101,7 +101,7 @@ class Output
      * Parse a file for output, good for static output ie help pages
      *
      * @param string $filename
-     * @param array $variables
+     * @param array  $variables
      *
      * @return void
      */
@@ -136,7 +136,7 @@ class Output
      * Adds the color codes for specific message types to file
      *
      * @param string $template
-     * @param array $printer
+     * @param array  $printer
      *
      * @return string
      */
@@ -160,7 +160,7 @@ class Output
      * Statically call a file to parse
      *
      * @param string $filename
-     * @param array $variables
+     * @param array  $variables
      *
      * @return void
      */
@@ -198,7 +198,7 @@ class Output
     {
         $width           = (int)shell_exec('tput cols');
         $remaining_width = $width - strlen($message_in);
-
+        $message         = '';
         if ($remaining_width > 0) {
             $message = str_repeat('=', $width);
             $message .= "\n{$message_in}\n";
@@ -212,7 +212,7 @@ class Output
      * Magic method to process output
      *
      * @param string $method
-     * @param array $args
+     * @param array  $args
      *
      * @return void
      */
@@ -235,7 +235,7 @@ class Output
      * Can use theme if Output::load is called first with custom printer
      *
      * @param string $method
-     * @param array $args
+     * @param array  $args
      *
      * @return void
      */
