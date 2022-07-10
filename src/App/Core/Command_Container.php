@@ -7,6 +7,11 @@ use App\Core\Config_Container;
 
 class Command_Container implements Container_Interface
 {
+    /**
+     * Command_Environment
+     *
+     * @var Command_Environment
+     */
     public Command_Environment $Environment;
 
     /**
@@ -16,6 +21,12 @@ class Command_Container implements Container_Interface
      */
     public Config_Container $Config;
 
+    /**
+     * Constructor
+     *
+     * @param array               $config
+     * @param Command_Environment $Command_Environment
+     */
     public function __construct(array $config = [], Command_Environment $Command_Environment)
     {
         $this->Config = new Config_Container();
@@ -27,7 +38,7 @@ class Command_Container implements Container_Interface
      * Set a value into the Command_Container instance
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return void
      */

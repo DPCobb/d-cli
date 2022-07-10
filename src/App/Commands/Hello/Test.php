@@ -2,6 +2,7 @@
 namespace App\Commands\Hello;
 
 use App\Interfaces\Command_Handler_Interface;
+use App\Core\Command_Container;
 use App\Core\Event_Handler;
 use App\Commands\Hello\Hello_Event;
 use App\IO\Output;
@@ -35,6 +36,8 @@ class Test implements Command_Handler_Interface
      */
     public array $required_arguments = ['name'];
 
+    public Command_Container $Command_Container;
+
     public function __construct()
     {
         $this->ev = new Event_Handler;
@@ -45,6 +48,7 @@ class Test implements Command_Handler_Interface
 
     public function handle()
     {
-        Output::message('Hello World TEST');
+        Output::message('Hello World TEST' . $this->name);
+        var_dump($this->Command_Container);
     }
 }
