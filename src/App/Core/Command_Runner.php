@@ -9,41 +9,66 @@ use Exception;
 class Command_Runner
 {
     /**
+     * class_name
+     *
+     * @var string
+     */
+    public string $class_name;
+
+    /**
+     * Command_Container
+     *
+     * @var Command_Container
+     */
+    public Command_Container $Command_Container;
+
+    /**
+     * command
+     *
+     * built command (command + sub command if it exists)
+     *
+     * @var string
+     */
+    public string $command;
+
+    /**
      * Construct
      *
      * @param Command_Container $Command_Container
-     * @param string $class_name
+     * @param string            $class_name
      */
     public function __construct(Command_Container $Command_Container, string $class_name)
     {
-        $this->class_name = $class_name;
+        $this->class_name        = $class_name;
         $this->Command_Container = $Command_Container;
+        $this->command           = $this->Command_Container->Environment->command . ' ' . (!empty($this->Command_Container->Environment->sub_command) ? $this->Command_Container->Environment->sub_command : '');
     }
 
     /**
      * Attempt to run our command
      *
-     * @param string $method
+     * @param  string    $method
      * @return void
      * @throws Exception
      */
-    public function run(string $method = ''): void {
+    public function run(string $method = ''): void
+    {
         $item = new ReflectionClass($this->class_name);
 
         // Get flags and arguments for processing
-        $flags = $item->hasProperty('flags') ? $this->Command_Container->Environment->flags : null;
-        $arguments = $item->hasProperty('arguments') ? $this->Command_Container->Environment->arguments : null;
+        $flags             = $item->hasProperty('flags') ? $this->Command_Container->Environment->flags : null;
+        $arguments         = $item->hasProperty('arguments') ? $this->Command_Container->Environment->arguments : null;
         $arguments_present = array_keys($arguments);
 
-        $constructor = $item->getConstructor();
+        $constructor        = $item->getConstructor();
         $constructor_params = $constructor->getParameters();
 
         $params = []; // eventually we should dependency inject other requirements
 
         // inject Command_Container into constructor if needed
-        foreach($constructor_params as $param) {
+        foreach ($constructor_params as $param) {
             $param_name = $param->getClass()->name;
-            if ($param_name === "App\\Core\\Command_Container") {
+            if ($param_name === 'App\\Core\\Command_Container') {
                 $params[$param->name] = $this->Command_Container;
             }
         }
@@ -61,9 +86,9 @@ class Command_Runner
         }
 
         // Get flags and arguments from instance
-        $allowed_flags = $instance->flags ?? [];
+        $allowed_flags      = $instance->flags ?? [];
         $required_arguments = $instance->required_arguments ?? [];
-        
+
         // Validate
         $this->validateFlagsAreAllowed($flags, $allowed_flags);
         $this->validateRequiredArguments($required_arguments, $arguments_present);
@@ -88,24 +113,24 @@ class Command_Runner
             return;
         }
 
-        throw new Exception("Unknown handler passed for command {$this->Command_Container->Environment->command} " . print_r($this->Command_Container, true));
-
+        throw new Exception("Unknown handler passed for command {$this->command} " . print_r($this->Command_Container, true));
     }
 
     /**
      * Validates all of the passed flags are allowed
      *
-     * @param array $flags
-     * @param array $allowed_flags
+     * @param  array     $flags
+     * @param  array     $allowed_flags
      * @return void
      * @throws Exception
      */
-    public function validateFlagsAreAllowed(array $flags, array $allowed_flags):void {
+    public function validateFlagsAreAllowed(array $flags, array $allowed_flags):void
+    {
         // Throw exception if we have unknown flags passed
         if (!is_null($flags)) {
             $processed_flags = array_diff($flags, $allowed_flags);
             if (!empty($processed_flags)) {
-                throw new Exception("Unknown flags passed to command {$this->Command_Container->Environment->command}: " . implode(',', $processed_flags));
+                throw new Exception("Unknown flags passed to command {$this->command}: " . implode(',', $processed_flags));
             }
         }
     }
@@ -113,17 +138,18 @@ class Command_Runner
     /**
      * Validate all the required arguments are present
      *
-     * @param array $required_arguments
-     * @param array $arguments_present
+     * @param  array     $required_arguments
+     * @param  array     $arguments_present
      * @return void
      * @throws Exception
      */
-    public function validateRequiredArguments(array $required_arguments, array $arguments_present):void {
+    public function validateRequiredArguments(array $required_arguments, array $arguments_present):void
+    {
         // Throw exception if we are missing required arguments
         if (!empty($required_arguments)) {
             $processed_arguments = array_diff($required_arguments, $arguments_present);
             if (!empty($processed_arguments)) {
-                throw new Exception("Missing required arguments for command {$this->Command_Container->Environment->command}: " . implode(',', $processed_arguments));
+                throw new Exception("Missing required arguments for command {$this->command}: " . implode(',', $processed_arguments));
             }
         }
     }
@@ -131,12 +157,13 @@ class Command_Runner
     /**
      * Set our flag values into our command handler
      *
-     * @param array $flags
-     * @param array $allowed_flags
-     * @param Command_Handler_Interface $instance
+     * @param  array                     $flags
+     * @param  array                     $allowed_flags
+     * @param  Command_Handler_Interface $instance
      * @return Command_Handler_Interface
      */
-    public function setFlags(array $flags, array $allowed_flags, Command_Handler_Interface $instance): Command_Handler_Interface {
+    public function setFlags(array $flags, array $allowed_flags, Command_Handler_Interface $instance): Command_Handler_Interface
+    {
         $false_flags = array_diff($allowed_flags, $flags);
         foreach ($flags as $flag) {
             $instance->{$flag} = true;
@@ -152,16 +179,16 @@ class Command_Runner
     /**
      * Sets our arguments into our handler
      *
-     * @param array $arguments_present
-     * @param array $arguments
-     * @param Command_Handler_Interface $instance
+     * @param  array                     $arguments_present
+     * @param  array                     $arguments
+     * @param  Command_Handler_Interface $instance
      * @return Command_Handler_Interface
      */
-    public function setArguments(array $arguments_present, array $arguments, Command_Handler_Interface $instance): Command_Handler_Interface {
-
+    public function setArguments(array $arguments_present, array $arguments, Command_Handler_Interface $instance): Command_Handler_Interface
+    {
         $missing_arguments = array_diff($instance->arguments, $arguments_present);
-        
-        foreach($arguments as $argument => $value) {
+
+        foreach ($arguments as $argument => $value) {
             $instance->{$argument} = $value;
         }
 

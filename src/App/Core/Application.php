@@ -7,6 +7,7 @@ use App\Core\Command_Validator;
 use App\Core\Event_Handler;
 use App\Core\Command_Runner;
 use Error;
+use Exception;
 
 class Application
 {
@@ -107,7 +108,7 @@ class Application
      * Set a command and it's action
      *
      * @param string $command_name
-     * @param mixed $action
+     * @param mixed  $action
      *
      * @return void
      */
@@ -165,8 +166,12 @@ class Application
             // passed a class @ method ex: App\Commands\Hello\Test@helloWorld
             if (strpos($action, '@') !== false) {
                 $parts = explode('@', $action);
-                $Command_Runner = new Command_Runner($this->Command_Container, $parts[0]);
-                $Command_Runner->run($parts[1]);
+                try {
+                    $Command_Runner = new Command_Runner($this->Command_Container, $parts[0]);
+                    $Command_Runner->run($parts[1]);
+                } catch (Exception $e) {
+                    Output::error($e->getMessage());
+                }
 
                 return;
             }
@@ -201,8 +206,12 @@ class Application
 
         $className = sprintf("App\Commands\%s\%s", $command, $this->command_class);
 
-        $Command_Runner = new Command_Runner($this->Command_Container, $className);
-        $Command_Runner->run();
+        try {
+            $Command_Runner = new Command_Runner($this->Command_Container, $className);
+            $Command_Runner->run();
+        } catch (Exception $e) {
+            Output::error($e->getMessage());
+        }
 
         return;
     }
@@ -210,7 +219,7 @@ class Application
     /**
      * Parse a command replacing - with _ and ucwords on all words
      *
-     * @param string $command
+     * @param  string $command
      * @return string
      */
     public function parseCommand(string $command): string
@@ -245,7 +254,7 @@ class Application
      * __call magic method
      *
      * @param string $arg
-     * @param array $params
+     * @param array  $params
      *
      * @return void
      */
