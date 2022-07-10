@@ -4,9 +4,7 @@ A Basic PHP CLI App Framework. This project is dependency free and meant to be a
 
 ***These docs are a work in progress as this project is still in development.***
 
-[Work In Progress Demo Project](https://github.com/DPCobb/dbcon)
-
-[Full Documentation](https://github.com/DPCobb/d-cli/wiki)
+[Full Documentation](https://github.com/DPCobb/d-cli/wiki) (For Beta Version)
 
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/dpcobb/d-cli?style=plastic) ![GitHub](https://img.shields.io/github/license/dpcobb/d-cli?style=plastic)
 
@@ -26,23 +24,30 @@ if (php_sapi_name() !== 'cli') {
     exit;
 }
 
-require_once __DIR__ . "/vendor/autoload.php";
+require_once __DIR__ . '/vendor/autoload.php';
 
-use App\Core\Application;
-use App\Core\Config;
-use App\Core\Command_Container;
+use App\Core\Application; // Main Application
+use App\Core\Config; // Process the config
+use App\Core\Command_Request; // Process the Request
+use App\Core\Command_Container; // Stores the config and request environment
+use App\IO\Output;
 
 // Get any user set config values
-$config = Config::load(__DIR__ . "/App/config.ini")->get();
-$command_container = new Command_Container($config, $argv);
+$config = Config::load(__DIR__ . '/App/config.ini')->get();
 
-$app = Application::load($command_container);
+// Load the request into the Command_Container
+$Command_Request   = new Command_Request($argv);
+$Command_Container = new Command_Container($config, $Command_Request->process());
 
+// Load the Application
+$app = Application::load($Command_Container);
 
+// Set the commands
 $app->set('hello-world', function () {
-    echo "Hello World";
+    Output::message('Hello World');
 });
 
+// Run the Application
 $app->run();
 
 ```
@@ -62,23 +67,30 @@ if (php_sapi_name() !== 'cli') {
     exit;
 }
 
-require_once __DIR__ . "/vendor/autoload.php";
+require_once __DIR__ . '/vendor/autoload.php';
 
-use App\Core\Application;
-use App\Core\Config;
-use App\Core\Command_Container;
+use App\Core\Application; // Main Application
+use App\Core\Config; // Process the config
+use App\Core\Command_Request; // Process the Request
+use App\Core\Command_Container; // Stores the config and request environment
+use App\IO\Output;
+use App\Commands\Hello\Test;
 
 // Get any user set config values
-$config = Config::load(__DIR__ . "/App/config.ini")->get();
-$command_container = new Command_Container($config, $argv);
+$config = Config::load(__DIR__ . '/App/config.ini')->get();
 
-$app = Application::load($command_container);
+// Load the request into the Command_Container
+$Command_Request   = new Command_Request($argv);
+$Command_Container = new Command_Container($config, $Command_Request->process());
 
+// Load the Application
+$app = Application::load($Command_Container);
 
-$app->set('hello-world', 'App\Commands\Hello\Test@test');
+// Set the commands
+$app->set('hello-world', Test::class . '@test');
 
-
-$app->run()
+// Run the Application
+$app->run();
 ```
 
 This will call the ```test``` method in the ```Test``` class.
@@ -99,18 +111,52 @@ if (php_sapi_name() !== 'cli') {
     exit;
 }
 
-require_once __DIR__ . "/vendor/autoload.php";
+require_once __DIR__ . '/vendor/autoload.php';
 
-use App\Core\Application;
-use App\Core\Config;
-use App\Core\Command_Container;
+use App\Core\Application; // Main Application
+use App\Core\Config; // Process the config
+use App\Core\Command_Request; // Process the Request
+use App\Core\Command_Container; // Stores the config and request environment
 
 // Get any user set config values
-$config = Config::load(__DIR__ . "/App/config.ini")->get();
-$command_container = new Command_Container($config, $argv);
+$config = Config::load(__DIR__ . '/App/config.ini')->get();
 
-$app = Application::load($command_container);
+// Load the request into the Command_Container
+$Command_Request   = new Command_Request($argv);
+$Command_Container = new Command_Container($config, $Command_Request->process());
 
+// Load the Application
+$app = Application::load($Command_Container);
+
+// Run the Application
 $app->run();
 ```
 The ```Application``` class handles the logic and routing of the calls.
+
+## Passing Arguments
+
+Arguments are treated as key value pairs passed in the the key starting with the `--` annotation. Arguments can be passed into the command in the following way:
+
+```bash
+dcli hello --name "John Smith"
+# OR
+
+dcli hello --name John Smith
+```
+The command parser will return `John Smith` for the `name` argument for either of these approaches.
+
+The command runner will automatically set these variables within your class when it resolves the handler. For example, if you have a `Default_Handler` with the argument `name` available the command runner will add the value of `name` to `$this->name` within your class.
+
+## Passing Flags
+
+Flags are considered booleans as can be passed with either `-` or `--` annotation.
+
+The command runner will automatically set these variables within your class when it resolves the handler. For example, if you have a `Default_Handler` with the flag `v` available the command runner will set `$this->v` to true or false depending on if it was passed or not.
+
+## Command_Container
+
+The Command_Container holds information about your Config and your Request Environment. To tell the Command Runner to load this into your handler class you can do one of two things. First you can declare a variable in your class `public Command_Container $Command_Container` this will be set AFTER the class is instantiated so you will not have access in the constructor, but will in the other methods of your class. If you need this available in your constructor function add `Command_Container $Command_Container` as a variable that needs to be passed into the class.
+
+## Event_Handler Global
+
+The main Application Event_Handler can be injected into your handler classes using the same two techniques outlined above for the `Command_Container`

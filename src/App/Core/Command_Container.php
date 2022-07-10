@@ -1,124 +1,50 @@
 <?php
 namespace App\Core;
 
-use App\Interfaces\Command_Container_Interface;
-use App\Utility\Cleaner;
-use App\Utility\Arr;
-use stdClass;
+use App\Interfaces\Container_Interface;
+use App\Core\Command_Environment;
+use App\Core\Config_Container;
 
-class Command_Container implements Command_Container_Interface
+class Command_Container implements Container_Interface
 {
     /**
-     * instance
+     * Command_Environment
      *
-     * @var array
+     * @var Command_Environment
      */
-    public array $instance;
+    public Command_Environment $Environment;
 
     /**
-     * config
+     * Config
      *
-     * @var stdClass
+     * @var Config_Container
      */
-    public stdClass $config;
-
-    public function __construct(array $config = [], array $args)
-    {
-        // Drop the config into a class so we can do config->foo or config->foo[bar] etc
-        $this->config = new stdClass();
-
-        foreach ($config as $k => $v) {
-            $this->config->$k = $v;
-        }
-
-        // Empty instance array
-        $this->instance           = [];
-        $this->instance['flags']  = [];
-        $this->instance['params'] = [];
-
-        $this->processArgs($args);
-    }
+    public Config_Container $Config;
 
     /**
-     * Processing the command line args passed into the Command Container
+     * Constructor
      *
-     * @param array $args
-     *
-     * @return void
+     * @param array               $config
+     * @param Command_Environment $Command_Environment
      */
-    public function processArgs(array $args): void
+    public function __construct(array $config = [], Command_Environment $Command_Environment)
     {
-        // Set our command value
-        $this->instance['command'] = Cleaner::clean($args[1]);
-
-        // IF we have a sub command
-        if (!empty($args[2]) && strpos($args[2], '--') === false && strpos($args[2], '=') === false) {
-            // ignore if we are a -fOo flag
-            if (!preg_match("/^-\w+/", $args[2])) {
-                $this->instance['sub_command'] = Cleaner::clean($args[2]);
-            }
-        }
-
-        // Process the remaining args for flags and params
-        foreach ($args as $k => $v) {
-            $this->processFlags($v);
-
-            if (strpos($v, '=') !== false) {
-                $params                               = explode('=', $v);
-                $this->instance['params'][$params[0]] = $params[1];
-            }
-        }
-
-        return;
-    }
-
-    /**
-     * Process an arg value if it is a flag
-     *
-     * @param string $value
-     *
-     * @return void
-     */
-    public function processFlags(string $value): void
-    {
-        // --foo flags
-        if (strpos($value, '--') !== false) {
-            $this->instance['flags'][] = str_replace('--', '', $value);
-        }
-
-        // -f flags
-        if (strpos($value, '-') !== false) {
-            $parts = explode('-', $value);
-
-            // ignore dashes in commands, ex: hello-world
-            if ($parts[0] !== '') {
-                return;
-            }
-
-            // Split the flags ex: -iD would be [i, D]
-            $flags = str_split($parts[1]);
-            // add each as a flag setting
-            foreach ($flags as $flag) {
-                if (!empty($flag)) {
-                    $this->instance['flags'][] = $flag;
-                }
-            }
-        }
-
-        return;
+        $this->Config = new Config_Container();
+        $this->Config->load($config);
+        $this->Environment = $Command_Environment;
     }
 
     /**
      * Set a value into the Command_Container instance
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return void
      */
     public function set(string $key, $value): void
     {
-        $this->instance[$key] = $value;
+        $this->Environment->$key = $value;
         return;
     }
 
@@ -131,7 +57,7 @@ class Command_Container implements Command_Container_Interface
      */
     public function get(string $key)
     {
-        return Arr::get($key, $this->instance);
+        return $this->Environment->{$key};
     }
 
     /**
@@ -143,7 +69,7 @@ class Command_Container implements Command_Container_Interface
      */
     public function has(string $key): bool
     {
-        return !empty(Arr::get($key, $this->instance));
+        return !empty($this->Environment->{$key});
     }
 
     /**
@@ -155,10 +81,10 @@ class Command_Container implements Command_Container_Interface
      */
     public function hasFlag(string $key): bool
     {
-        if (empty($this->instance['flags'])) {
+        if (empty($this->Environment->flags)) {
             return false;
         }
 
-        return in_array($key, $this->instance['flags']);
+        return in_array($key, $this->Environment->flags);
     }
 }

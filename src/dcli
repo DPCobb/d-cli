@@ -5,7 +5,7 @@ if (php_sapi_name() !== 'cli') {
     exit;
 }
 
-require_once __DIR__ . "/vendor/autoload.php";
+require_once __DIR__ . '/vendor/autoload.php';
 
 use App\Core\Application;
 use App\Core\Config;
@@ -13,19 +13,21 @@ use App\Core\Command_Container;
 use App\IO\Output;
 use App\IO\Input;
 use App\IO\Themes\Alt_Printer;
+use App\Core\Command_Request;
 
 // Get any user set config values
-$config = Config::load(__DIR__ . "/App/config.ini")->get();
-$command_container = new Command_Container($config, $argv);
+$config = Config::load(__DIR__ . '/App/config.ini')->get();
 
-$app = Application::load($command_container);
+$Command_Request = new Command_Request($argv);
+$Command_Container = new Command_Container($config, $Command_Request->process());
 
+$app = Application::load($Command_Container);
 
 $app->set('hello-world', function () {
     $out = new Output(new Alt_Printer);
     $out->message('Hello World');
 
-    if (Input::affirm("Would you like to continue? Y/n")) {
+    if (Input::affirm('Would you like to continue? Y/n')) {
         Output::success('CONTINUE');
     }
 
@@ -35,7 +37,7 @@ $app->set('hello-world', function () {
 });
 
 $app->set('help', function () {
-    Output::file(__DIR__ . "/App/Output_Files/test.txt", ['version' => '1.2.3-beta']);
+    Output::file(__DIR__ . '/App/Output_Files/test.txt', ['version' => '1.2.3-beta']);
 });
 
 $app->set('world', 'App\Commands\Hello\Default_Handler@world');
