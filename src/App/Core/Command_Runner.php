@@ -82,7 +82,7 @@ class Command_Runner
 
         // Make sure we know what this is
         if (!$instance instanceof Command_Handler_Interface) {
-            throw new Exception("Class is not an instance of Command_Handler_Interface for command {$this->Command_Container->Environment->command}");
+            throw new Exception("Class is not an instance of Command_Handler_Interface for command {$this->command}");
         }
 
         // Get flags and arguments from instance
